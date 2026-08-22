@@ -39,10 +39,57 @@ public class ProdutoService
         if (produto.Saldo < 0)
             throw new ArgumentException("Saldo não pode ser negativo.");
 
+        var codigoJaExiste = await _context.Produtos
+            .AnyAsync(p => p.Codigo == produto.Codigo);
+
+        if (codigoJaExiste)
+            throw new ArgumentException($"Já existe um produto cadastrado com o código '{produto.Codigo}'.");
+
         _context.Produtos.Add(produto);
         await _context.SaveChangesAsync();
 
         return produto;
+    }
+        public async Task<Produto> AtualizarAsync(int id, Produto produtoAtualizado)
+    {
+        var produto = await _context.Produtos.FindAsync(id);
+
+        if (produto is null)
+            throw new KeyNotFoundException($"Produto com Id {id} não encontrado.");
+
+        if (string.IsNullOrWhiteSpace(produtoAtualizado.Codigo))
+            throw new ArgumentException("Código do produto é obrigatório.");
+
+        if (string.IsNullOrWhiteSpace(produtoAtualizado.Descricao))
+            throw new ArgumentException("Descrição do produto é obrigatória.");
+
+        if (produtoAtualizado.Saldo < 0)
+            throw new ArgumentException("Saldo não pode ser negativo.");
+
+        var codigoEmUsoPorOutro = await _context.Produtos
+            .AnyAsync(p => p.Codigo == produtoAtualizado.Codigo && p.Id != id);
+
+        if (codigoEmUsoPorOutro)
+            throw new ArgumentException($"Já existe outro produto cadastrado com o código '{produtoAtualizado.Codigo}'.");
+
+        produto.Codigo = produtoAtualizado.Codigo;
+        produto.Descricao = produtoAtualizado.Descricao;
+        produto.Saldo = produtoAtualizado.Saldo;
+
+        await _context.SaveChangesAsync();
+
+        return produto;
+    }
+
+    public async Task ExcluirAsync(int id)
+    {
+        var produto = await _context.Produtos.FindAsync(id);
+
+        if (produto is null)
+            throw new KeyNotFoundException($"Produto com Id {id} não encontrado.");
+
+        _context.Produtos.Remove(produto);
+        await _context.SaveChangesAsync();
     }
 
     public async Task AtualizarSaldoAsync(int produtoId, int quantidadeUtilizada)

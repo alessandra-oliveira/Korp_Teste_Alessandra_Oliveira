@@ -50,6 +50,38 @@ public class ProdutosController : ControllerBase
         }
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Atualizar(int id, [FromBody] Produto produto)
+    {
+        try
+        {
+            var produtoAtualizado = await _produtoService.AtualizarAsync(id, produto);
+            return Ok(produtoAtualizado);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Excluir(int id)
+    {
+        try
+        {
+            await _produtoService.ExcluirAsync(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
     [HttpPut("{id}/atualizar-saldo")]
     public async Task<IActionResult> AtualizarSaldo(int id, [FromBody] int quantidadeUtilizada)
     {
