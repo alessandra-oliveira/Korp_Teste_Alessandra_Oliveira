@@ -27,33 +27,21 @@
         Voltar
       </button>
 
-      @if (nota()!.status === 'Aberta') {
-
-        <button
-          type="button"
-          class="nota-btn nota-btn-fechar"
-          [disabled]="fechando()"
-          (click)="fecharNota()">
-
-          @if (fechando()) {
-            Fechando...
-          } @else {
-            Fechar Nota
-          }
-
-        </button>
-
-      }
-
       <button
         type="button"
         class="nota-btn nota-btn-imprimir"
+        [disabled]="!podeImprimir() || imprimindo()"
         (click)="imprimir()">
-        Imprimir
+
+        @if (imprimindo()) {
+          Processando...
+        } @else {
+          Imprimir
+        }
+
       </button>
 
     </div>
-
 
     <div class="nota-documento">
 

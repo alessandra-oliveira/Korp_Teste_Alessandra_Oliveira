@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { forkJoin, of } from 'rxjs';
@@ -21,15 +21,16 @@ interface ItemComProduto {
   selector: 'app-detalhe-nota-fiscal',
   templateUrl: './detalhe-nota-fiscal.html',
   styleUrl: './detalhe-nota-fiscal.css',
-  imports: [DatePipe]
+  imports: [DatePipe],
 })
 export class DetalheNotaFiscal implements OnInit {
-
   nota = signal<NotaFiscal | null>(null);
   itensComProduto = signal<ItemComProduto[]>([]);
   carregando = signal(false);
   erro = signal('');
-  fechando = signal(false);
+  imprimindo = signal(false);
+
+  podeImprimir = computed(() => this.nota()?.status === 'Aberta');
 
   private notaId!: number;
 
@@ -37,7 +38,7 @@ export class DetalheNotaFiscal implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private notaFiscalService: NotaFiscalService,
-    private produtoService: ProdutoService
+    private produtoService: ProdutoService,
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +58,7 @@ export class DetalheNotaFiscal implements OnInit {
       error: () => {
         this.erro.set('Não foi possível carregar a nota fiscal.');
         this.carregando.set(false);
-      }
+      },
     });
   }
 
@@ -68,10 +69,8 @@ export class DetalheNotaFiscal implements OnInit {
       return;
     }
 
-    const chamadas = nota.itens.map(item =>
-      this.produtoService.obterPorId(item.produtoId).pipe(
-        catchError(() => of(null))
-      )
+    const chamadas = nota.itens.map((item) =>
+      this.produtoService.obterPorId(item.produtoId).pipe(catchError(() => of(null))),
     );
 
     forkJoin(chamadas).subscribe({
@@ -84,7 +83,7 @@ export class DetalheNotaFiscal implements OnInit {
             descricaoProduto: produto?.descricao ?? 'Produto não encontrado (excluído)',
             codigoProduto: produto?.codigo ?? '—',
             quantidade: item.quantidade,
-            produtoEncontrado: produto !== null
+            produtoEncontrado: produto !== null,
           };
         });
 
@@ -94,31 +93,40 @@ export class DetalheNotaFiscal implements OnInit {
       error: () => {
         this.erro.set('Erro inesperado ao carregar os itens da nota.');
         this.carregando.set(false);
-      }
-    });
-  }
-
-  fecharNota(): void {
-    const notaAtual = this.nota();
-    if (!notaAtual) return;
-
-    this.fechando.set(true);
-    this.erro.set('');
-
-    this.notaFiscalService.fechar(notaAtual.id).subscribe({
-      next: () => {
-        this.fechando.set(false);
-        this.carregarNota();
       },
-      error: () => {
-        this.fechando.set(false);
-        this.erro.set('Não foi possível fechar a nota fiscal. Tente novamente.');
-      }
     });
   }
 
   imprimir(): void {
-    window.print();
+    const notaAtual = this.nota();
+    if (!notaAtual || notaAtual.status !== 'Aberta' || this.imprimindo()) {
+      return;
+    }
+
+    this.imprimindo.set(true);
+    this.erro.set('');
+
+    this.notaFiscalService.fechar(notaAtual.id).subscribe({
+      next: () => {
+        this.notaFiscalService.obterPorId(notaAtual.id).subscribe({
+          next: (notaAtualizada) => {
+            this.nota.set(notaAtualizada);
+            this.imprimindo.set(false);
+            setTimeout(() => window.print(), 0);
+          },
+          error: () => {
+            this.imprimindo.set(false);
+            this.erro.set('Nota fechada, mas não foi possível atualizar a tela.');
+          },
+        });
+      },
+      error: (err) => {
+        this.imprimindo.set(false);
+        this.erro.set(
+          err.error?.erro ?? 'Não foi possível imprimir a nota fiscal. Tente novamente.',
+        );
+      },
+    });
   }
 
   voltar(): void {
