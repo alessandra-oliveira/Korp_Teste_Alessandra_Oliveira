@@ -1,0 +1,42 @@
+<div class="container">
+  <h2>{{ modoEdicao() ? 'Editar Produto' : 'Novo Produto' }}</h2>
+
+  @if (erro()) {
+    <div class="erro">
+      {{ erro() }}
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="salvar()">
+    <div class="campo">
+      <label for="codigo">Código</label>
+      <input id="codigo" type="text" formControlName="codigo">
+      @if (form.get('codigo')?.invalid && form.get('codigo')?.touched) {
+        <span class="erro-campo">Código é obrigatório.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="descricao">Descrição</label>
+      <input id="descricao" type="text" formControlName="descricao">
+      @if (form.get('descricao')?.invalid && form.get('descricao')?.touched) {
+        <span class="erro-campo">Descrição é obrigatória.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="saldo">Saldo</label>
+      <input id="saldo" type="number" formControlName="saldo">
+      @if (form.get('saldo')?.invalid && form.get('saldo')?.touched) {
+        <span class="erro-campo">Saldo deve ser zero ou maior.</span>
+      }
+    </div>
+
+    <div class="acoes">
+      <button type="submit" [disabled]="salvando()">
+        {{ salvando() ? 'Salvando...' : 'Salvar' }}
+      </button>
+      <a routerLink="/produtos">Cancelar</a>
+    </div>
+  </form>
+</div>

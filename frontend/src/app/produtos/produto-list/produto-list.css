@@ -1,0 +1,7 @@
+td:last-child {
+  white-space: nowrap;
+}
+
+td:last-child .btn-action {
+  margin-right: 8px;
+}

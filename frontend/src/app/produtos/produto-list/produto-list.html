@@ -1,0 +1,65 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <h1>Produtos</h1>
+
+    <a routerLink="/produtos/novo" class="btn-primary">
+      + Novo Produto
+    </a>
+  </div>
+
+  @if (carregando()) {
+    <div class="loading">
+      Carregando produtos...
+    </div>
+  }
+
+  @if (erro()) {
+    <div class="error">
+      {{ erro() }}
+    </div>
+  }
+
+  @if (!carregando() && produtos().length > 0) {
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>CÓDIGO</th>
+            <th>DESCRIÇÃO</th>
+            <th>SALDO</th>
+            <th>AÇÕES</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (produto of produtos(); track produto.id) {
+            <tr>
+              <td class="codigo">{{ produto.codigo }}</td>
+              <td>{{ produto.descricao }}</td>
+              <td>{{ produto.saldo }}</td>
+              <td>
+                <a [routerLink]="['/produtos', produto.id, 'editar']" class="btn-action">
+                  Editar
+                </a>
+
+                <button class="btn-danger" (click)="excluirProduto(produto.id!)">
+                  Excluir
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  }
+
+  @if (!carregando() && produtos().length === 0 && !erro()) {
+    <div class="empty">
+      Nenhum produto cadastrado ainda.
+    </div>
+  }
+
+</div>

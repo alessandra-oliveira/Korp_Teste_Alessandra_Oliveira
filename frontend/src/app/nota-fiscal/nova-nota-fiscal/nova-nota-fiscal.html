@@ -1,0 +1,206 @@
+<div class="page-container">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Nova Nota Fiscal</h1>
+      <p>Adicione os produtos e suas respectivas quantidades.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="cancelar()">
+      Cancelar
+    </button>
+
+  </div>
+
+  <div class="nota-card">
+
+    <div class="nota-header">
+
+      <div>
+        <span class="label">Status</span>
+        <span class="status aberta">Aberta</span>
+      </div>
+
+    </div>
+
+    <div class="itens-section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Produtos</h2>
+          <p>
+            Adicione os produtos que farão parte da nota fiscal.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="carregandoProdutos() || produtos().length === 0"
+          (click)="adicionarLinha()">
+          + Adicionar produto
+        </button>
+
+      </div>
+
+      @if (carregandoProdutos()) {
+
+        <div class="loading">
+          Carregando produtos...
+        </div>
+
+      }
+
+      @if (erro()) {
+
+        <div class="error">
+          {{ erro() }}
+        </div>
+
+      }
+
+      @if (
+        !carregandoProdutos() &&
+        produtos().length === 0 &&
+        !erro()
+      ) {
+
+        <div class="empty">
+          <p>Nenhum produto cadastrado.</p>
+        </div>
+
+      }
+
+      @if (
+        !carregandoProdutos() &&
+        produtos().length > 0
+      ) {
+
+        <div class="itens-list">
+
+          @for (linha of linhas(); track $index) {
+
+            <div class="linha-item">
+
+              <div class="campo produto">
+
+                <label for="produto-{{ $index }}">
+                  Produto
+                </label>
+
+                <select
+                  id="produto-{{ $index }}"
+                  class="select-produto"
+                  [value]="linha.produtoId ?? ''"
+                  (change)="
+                    atualizarProduto(
+                      $index,
+                      $any($event.target).value
+                    )
+                  ">
+
+                  <option value="" disabled>
+                    Selecione um produto
+                  </option>
+
+                  @for (produto of produtos(); track produto.id) {
+
+                    <option [value]="produto.id">
+                      {{ produto.codigo }} - {{ produto.descricao }}
+                    </option>
+
+                  }
+
+                </select>
+
+              </div>
+
+              <div class="campo quantidade">
+
+                <label for="quantidade-{{ $index }}">
+                  Quantidade
+                </label>
+
+                <input
+                  id="quantidade-{{ $index }}"
+                  type="number"
+                  min="1"
+                  [value]="linha.quantidade"
+                  (input)="
+                    atualizarQuantidade(
+                      $index,
+                      $any($event.target).value
+                    )
+                  "
+                >
+
+                @if (saldoDisponivel(linha.produtoId) !== null) {
+                  <span class="saldo-info" [class.saldo-excedido]="quantidadeExcedeSaldo(linha)">
+                    @if (quantidadeExcedeSaldo(linha)) {
+                      Saldo insuficiente (disponível: {{ saldoDisponivel(linha.produtoId) }})
+                    } @else {
+                      Disponível: {{ saldoDisponivel(linha.produtoId) }}
+                    }
+                  </span>
+                }
+
+              </div>
+
+              @if (linhas().length > 1) {
+
+                <button
+                  type="button"
+                  class="btn-remove"
+                  title="Remover produto"
+                  aria-label="Remover produto"
+                  (click)="removerLinha($index)">
+
+                  ×
+
+                </button>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+    <div class="nota-footer">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="cancelar()">
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        [disabled]="!podeSalvar() || salvando()"
+        (click)="salvar()">
+
+        @if (salvando()) {
+          Salvando...
+        } @else {
+          Salvar Nota Fiscal
+        }
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,507 @@
+.detalhe-nota-fiscal {
+  min-height: 100vh;
+  padding: 40px 56px;
+  background: #f7f7f7;
+  box-sizing: border-box;
+}
+
+.detalhe-nota-fiscal .nota-acoes {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto 20px;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.detalhe-nota-fiscal .nota-btn {
+  padding: 10px 18px;
+
+  border: 1px solid #d4d4d4;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #222222;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.detalhe-nota-fiscal .nota-btn:hover {
+  background: #f2f2f2;
+}
+
+.detalhe-nota-fiscal .nota-btn-fechar {
+  border-color: #d4d4d4;
+  color: #b42318;
+}
+
+.detalhe-nota-fiscal .nota-btn-fechar:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.detalhe-nota-fiscal .nota-btn-imprimir {
+  background: #222222;
+  border-color: #222222;
+  color: #ffffff;
+}
+
+.detalhe-nota-fiscal .nota-btn-imprimir:hover {
+  background: #000000;
+}
+
+.detalhe-nota-fiscal .nota-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.detalhe-nota-fiscal .nota-documento {
+  width: 100%;
+  max-width: 1000px;
+  min-height: 1000px;
+
+  margin: 0 auto;
+  padding: 32px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+
+  color: #222222;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.detalhe-nota-fiscal .nota-cabecalho {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+
+  margin-bottom: 16px;
+
+  border: 1px solid #222222;
+}
+
+.detalhe-nota-fiscal .nota-empresa {
+  padding: 20px;
+
+  border-right: 1px solid #222222;
+}
+
+.detalhe-nota-fiscal .nota-empresa h1 {
+  margin: 0 0 12px;
+
+  color: #111111;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.detalhe-nota-fiscal .nota-empresa p {
+  margin: 4px 0;
+
+  color: #555555;
+
+  font-size: 11px;
+}
+
+.detalhe-nota-fiscal .nota-identificacao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px;
+
+  text-align: center;
+}
+
+.detalhe-nota-fiscal .nota-identificacao h2 {
+  margin: 0 0 12px;
+
+  color: #111111;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.detalhe-nota-fiscal .nota-numero {
+  margin-bottom: 8px;
+
+  color: #111111;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.detalhe-nota-fiscal .nota-identificacao > span {
+  margin-top: 4px;
+
+  color: #666666;
+
+  font-size: 11px;
+}
+
+.detalhe-nota-fiscal .nota-status {
+  display: inline-flex;
+
+  margin-top: 10px;
+  padding: 5px 12px;
+
+  border: 1px solid #bdbdbd;
+  border-radius: 20px;
+
+  background: #f5f5f5;
+  color: #333333;
+
+  font-size: 10px !important;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.detalhe-nota-fiscal .nota-status-aberta {
+  background: #f5f5f5;
+  color: #222222;
+}
+
+.detalhe-nota-fiscal .nota-status-fechada {
+  background: #222222;
+  border-color: #222222;
+  color: #ffffff;
+}
+
+.detalhe-nota-fiscal .nota-bloco,
+.detalhe-nota-fiscal .nota-produtos,
+.detalhe-nota-fiscal .nota-observacoes {
+  margin-bottom: 16px;
+
+  border: 1px solid #222222;
+}
+
+.detalhe-nota-fiscal .nota-titulo-bloco {
+  padding: 8px 12px;
+
+  background: #f1f1f1;
+
+  border-bottom: 1px solid #222222;
+
+  color: #222222;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.detalhe-nota-fiscal .nota-dados {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 20px;
+
+  padding: 14px;
+}
+
+.detalhe-nota-fiscal .nota-dado {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detalhe-nota-fiscal .nota-dado span {
+  color: #777777;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+}
+
+.detalhe-nota-fiscal .nota-dado strong {
+  color: #222222;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.detalhe-nota-fiscal .nota-tabela {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+.detalhe-nota-fiscal .nota-tabela th {
+  padding: 10px 12px;
+
+  background: #f1f1f1;
+
+  border-bottom: 1px solid #222222;
+
+  color: #333333;
+
+  text-align: left;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.detalhe-nota-fiscal .nota-tabela td {
+  padding: 11px 12px;
+
+  border-bottom: 1px solid #e0e0e0;
+
+  color: #333333;
+
+  font-size: 12px;
+}
+
+.detalhe-nota-fiscal .nota-tabela tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.detalhe-nota-fiscal .nota-tabela th:first-child,
+.detalhe-nota-fiscal .nota-tabela td:first-child {
+  width: 120px;
+}
+
+.detalhe-nota-fiscal .nota-tabela th:last-child,
+.detalhe-nota-fiscal .nota-tabela td:last-child {
+  width: 120px;
+  text-align: center;
+}
+
+.detalhe-nota-fiscal .nota-sem-itens {
+  padding: 25px !important;
+
+  color: #777777 !important;
+
+  text-align: center;
+}
+
+.detalhe-nota-fiscal .nota-totais {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+.detalhe-nota-fiscal .nota-total-item {
+  min-width: 180px;
+
+  padding: 14px;
+
+  border: 1px solid #222222;
+
+  background: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detalhe-nota-fiscal .nota-total-item span {
+  color: #777777;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+}
+
+.detalhe-nota-fiscal .nota-total-item strong {
+  color: #222222;
+
+  font-size: 14px;
+}
+
+.detalhe-nota-fiscal .nota-total-final {
+  min-width: 230px;
+
+  text-align: right;
+}
+
+.detalhe-nota-fiscal .nota-total-final strong {
+  font-size: 18px;
+}
+
+.detalhe-nota-fiscal .nota-observacoes {
+  min-height: 80px;
+}
+
+.detalhe-nota-fiscal .nota-observacoes p {
+  margin: 0;
+  padding: 14px;
+
+  color: #555555;
+
+  font-size: 11px;
+}
+
+.detalhe-nota-fiscal .nota-rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-top: 14px;
+
+  border-top: 1px solid #222222;
+
+  color: #555555;
+
+  font-size: 10px;
+}
+
+.detalhe-nota-fiscal .nota-rodape strong {
+  color: #222222;
+
+  font-size: 10px;
+}
+
+.detalhe-nota-fiscal .nota-estado {
+  max-width: 1000px;
+
+  margin: 40px auto;
+  padding: 30px;
+
+  background: #ffffff;
+
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+
+  color: #666666;
+
+  text-align: center;
+}
+
+.detalhe-nota-fiscal .nota-erro {
+  max-width: 1000px;
+
+  margin: 0 auto 20px;
+  padding: 14px 18px;
+
+  border: 1px solid #f1b5b5;
+  border-radius: 6px;
+
+  background: #fff5f5;
+  color: #b42318;
+
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .detalhe-nota-fiscal {
+    padding: 24px;
+  }
+
+  .detalhe-nota-fiscal .nota-acoes {
+    width: 100%;
+  }
+
+  .detalhe-nota-fiscal .nota-documento {
+    padding: 24px;
+  }
+
+  .detalhe-nota-fiscal .nota-cabecalho {
+    grid-template-columns: 1fr;
+  }
+
+  .detalhe-nota-fiscal .nota-empresa {
+    border-right: none;
+    border-bottom: 1px solid #222222;
+  }
+
+  .detalhe-nota-fiscal .nota-dados {
+    grid-template-columns: 1fr;
+  }
+
+  .detalhe-nota-fiscal .nota-totais {
+    flex-direction: column;
+  }
+
+  .detalhe-nota-fiscal .nota-total-final {
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .detalhe-nota-fiscal {
+    padding: 12px;
+  }
+
+  .detalhe-nota-fiscal .nota-acoes {
+    flex-direction: column;
+  }
+
+  .detalhe-nota-fiscal .nota-btn {
+    width: 100%;
+  }
+
+  .detalhe-nota-fiscal .nota-documento {
+    padding: 16px;
+  }
+
+  .detalhe-nota-fiscal .nota-produtos {
+    overflow-x: auto;
+  }
+
+  .detalhe-nota-fiscal .nota-tabela {
+    min-width: 550px;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .detalhe-nota-fiscal {
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .detalhe-nota-fiscal .nota-acoes,
+  .detalhe-nota-fiscal .nota-erro,
+  .detalhe-nota-fiscal .nota-estado {
+    display: none !important;
+  }
+
+  .detalhe-nota-fiscal .nota-documento {
+    width: 210mm;
+    min-height: 297mm;
+
+    margin: 0;
+    padding: 12mm;
+
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .detalhe-nota-fiscal .nota-cabecalho,
+  .detalhe-nota-fiscal .nota-bloco,
+  .detalhe-nota-fiscal .nota-produtos,
+  .detalhe-nota-fiscal .nota-observacoes {
+    break-inside: avoid;
+  }
+}

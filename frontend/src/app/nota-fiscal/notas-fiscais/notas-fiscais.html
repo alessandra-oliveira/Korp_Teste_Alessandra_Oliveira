@@ -1,0 +1,102 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <h1>Notas Fiscais</h1>
+
+    <button class="btn-primary" (click)="novaNota()">
+      + Nova Nota Fiscal
+    </button>
+  </div>
+
+  @if (carregando()) {
+    <div class="loading">
+      Carregando notas fiscais...
+    </div>
+  }
+
+  @if (erro()) {
+    <div class="error">
+      {{ erro() }}
+    </div>
+  }
+
+  @if (!carregando() && notas().length > 0) {
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>NÚMERO</th>
+            <th>DATA</th>
+            <th>STATUS</th>
+            <th>ITENS</th>
+            <th>AÇÕES</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (nota of notas(); track nota.id) {
+
+            <tr>
+
+              <td class="codigo">
+                {{ nota.numero }}
+              </td>
+
+              <td>
+                {{ nota.dataCriacao | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+
+              <td>
+
+                <span
+                  class="status"
+                  [class.aberta]="nota.status === 'Aberta'"
+                  [class.fechada]="nota.status === 'Fechada'">
+
+                  {{ (nota.status) }}
+
+                </span>
+
+              </td>
+
+              <td>
+                {{ nota.itens.length }}
+              </td>
+
+              <td>
+
+                <button
+                  class="btn-action"
+                  (click)="visualizar(nota.id)">
+
+                  Visualizar
+
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+  @if (!carregando() && !erro() && notas().length === 0) {
+
+    <div class="empty">
+      Nenhuma nota fiscal cadastrada.
+    </div>
+
+  }
+
+</div>
