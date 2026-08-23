@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NovaNotaFiscal } from './nova-nota-fiscal';
+import { NovaNotaFiscalComponent } from './nova-nota-fiscal';
 
-describe('NovaNotaFiscal', () => {
-  let component: NovaNotaFiscal;
-  let fixture: ComponentFixture<NovaNotaFiscal>;
+describe('NovaNotaFiscalComponent', () => {
+  let component: NovaNotaFiscalComponent;
+  let fixture: ComponentFixture<NovaNotaFiscalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NovaNotaFiscal],
+      imports: [NovaNotaFiscalComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NovaNotaFiscal);
+    fixture = TestBed.createComponent(NovaNotaFiscalComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

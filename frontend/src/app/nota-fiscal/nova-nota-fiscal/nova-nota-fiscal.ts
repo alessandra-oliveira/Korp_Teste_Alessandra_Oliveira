@@ -16,28 +16,26 @@ interface LinhaItem {
   templateUrl: './nova-nota-fiscal.html',
   styleUrl: './nova-nota-fiscal.css',
 })
-export class NovaNotaFiscal implements OnInit {
-
+export class NovaNotaFiscalComponent implements OnInit {
   produtos = signal<Produto[]>([]);
   linhas = signal<LinhaItem[]>([{ produtoId: null, quantidade: 1 }]);
   salvando = signal(false);
   erro = signal('');
   carregandoProdutos = signal(false);
 
-  podeSalvar = computed(() =>
-  this.linhas().length > 0 &&
-  this.linhas().every(l => l.produtoId !== null && l.quantidade > 0) &&
-  !this.temLinhaExcedendoSaldo()
-);
-
-  temLinhaExcedendoSaldo = computed(() =>
-    this.linhas().some(l => this.quantidadeExcedeSaldo(l))
+  podeSalvar = computed(
+    () =>
+      this.linhas().length > 0 &&
+      this.linhas().every((l) => l.produtoId !== null && l.quantidade > 0) &&
+      !this.temLinhaExcedendoSaldo(),
   );
+
+  temLinhaExcedendoSaldo = computed(() => this.linhas().some((l) => this.quantidadeExcedeSaldo(l)));
 
   constructor(
     private notaFiscalService: NotaFiscalService,
     private produtoService: ProdutoService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -54,20 +52,20 @@ export class NovaNotaFiscal implements OnInit {
       error: () => {
         this.erro.set('Não foi possível carregar os produtos.');
         this.carregandoProdutos.set(false);
-      }
+      },
     });
   }
 
   adicionarLinha(): void {
-    this.linhas.update(linhas => [...linhas, { produtoId: null, quantidade: 1 }]);
+    this.linhas.update((linhas) => [...linhas, { produtoId: null, quantidade: 1 }]);
   }
 
   removerLinha(index: number): void {
-    this.linhas.update(linhas => linhas.filter((_, i) => i !== index));
+    this.linhas.update((linhas) => linhas.filter((_, i) => i !== index));
   }
 
   atualizarProduto(index: number, produtoId: string): void {
-    this.linhas.update(linhas => {
+    this.linhas.update((linhas) => {
       const copia = [...linhas];
       copia[index] = { ...copia[index], produtoId: produtoId ? Number(produtoId) : null };
       return copia;
@@ -75,7 +73,7 @@ export class NovaNotaFiscal implements OnInit {
   }
 
   atualizarQuantidade(index: number, quantidade: string): void {
-    this.linhas.update(linhas => {
+    this.linhas.update((linhas) => {
       const copia = [...linhas];
       copia[index] = { ...copia[index], quantidade: Number(quantidade) };
       return copia;
@@ -84,7 +82,7 @@ export class NovaNotaFiscal implements OnInit {
 
   saldoDisponivel(produtoId: number | null): number | null {
     if (produtoId === null) return null;
-    const produto = this.produtos().find(p => p.id === produtoId);
+    const produto = this.produtos().find((p) => p.id === produtoId);
     return produto ? produto.saldo : null;
   }
 
@@ -99,9 +97,9 @@ export class NovaNotaFiscal implements OnInit {
     this.salvando.set(true);
     this.erro.set('');
 
-    const itens: NovoItemNotaFiscal[] = this.linhas().map(l => ({
+    const itens: NovoItemNotaFiscal[] = this.linhas().map((l) => ({
       produtoId: l.produtoId!,
-      quantidade: l.quantidade
+      quantidade: l.quantidade,
     }));
 
     this.notaFiscalService.criar(itens).subscribe({
@@ -111,8 +109,10 @@ export class NovaNotaFiscal implements OnInit {
       },
       error: () => {
         this.salvando.set(false);
-        this.erro.set('Não foi possível criar a nota fiscal. Verifique os dados e tente novamente.');
-      }
+        this.erro.set(
+          'Não foi possível criar a nota fiscal. Verifique os dados e tente novamente.',
+        );
+      },
     });
   }
 

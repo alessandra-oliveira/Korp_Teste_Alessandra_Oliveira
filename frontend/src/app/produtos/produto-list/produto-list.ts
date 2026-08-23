@@ -7,14 +7,14 @@ import { RouterLink } from '@angular/router';
   selector: 'app-produto-list',
   imports: [RouterLink],
   templateUrl: './produto-list.html',
-  styleUrl: './produto-list.css'
+  styleUrl: './produto-list.css',
 })
-export class ProdutoListComponent implements OnInit {
+export class ListaProdutosComponent implements OnInit {
   produtos = signal<Produto[]>([]);
   carregando = signal(false);
   erro = signal('');
 
-  constructor(private produtoService: ProdutoService) { }
+  constructor(private produtoService: ProdutoService) {}
 
   ngOnInit(): void {
     this.carregarProdutos();
@@ -30,10 +30,12 @@ export class ProdutoListComponent implements OnInit {
         this.carregando.set(false);
       },
       error: (err) => {
-        this.erro.set('Não foi possível carregar os produtos. Verifique se a API do Estoque está rodando.');
+        this.erro.set(
+          'Não foi possível carregar os produtos. Verifique se a API do Estoque está rodando.',
+        );
         this.carregando.set(false);
         console.error(err);
-      }
+      },
     });
   }
 
@@ -49,7 +51,7 @@ export class ProdutoListComponent implements OnInit {
       error: (err) => {
         this.erro.set('Não foi possível excluir o produto.');
         console.error(err);
-      }
+      },
     });
   }
 }

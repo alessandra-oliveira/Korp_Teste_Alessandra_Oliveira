@@ -23,7 +23,7 @@ interface ItemComProduto {
   styleUrl: './detalhe-nota-fiscal.css',
   imports: [DatePipe],
 })
-export class DetalheNotaFiscal implements OnInit {
+export class DetalheNotaFiscalComponent implements OnInit {
   nota = signal<NotaFiscal | null>(null);
   itensComProduto = signal<ItemComProduto[]>([]);
   carregando = signal(false);

@@ -7,9 +7,9 @@ import { ProdutoService } from '../../services/produto';
   selector: 'app-produto-form',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './produto-form.html',
-  styleUrl: './produto-form.css'
+  styleUrl: './produto-form.css',
 })
-export class ProdutoFormComponent implements OnInit {
+export class FormularioProdutoComponent implements OnInit {
   form: FormGroup;
   modoEdicao = signal(false);
   produtoId: number | null = null;
@@ -20,12 +20,12 @@ export class ProdutoFormComponent implements OnInit {
     private fb: FormBuilder,
     private produtoService: ProdutoService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {
     this.form = this.fb.group({
       codigo: ['', Validators.required],
       descricao: ['', Validators.required],
-      saldo: [0, [Validators.required, Validators.min(0)]]
+      saldo: [0, [Validators.required, Validators.min(0)]],
     });
   }
 
@@ -47,7 +47,7 @@ export class ProdutoFormComponent implements OnInit {
       error: (err) => {
         this.erro.set('Não foi possível carregar o produto.');
         console.error(err);
-      }
+      },
     });
   }
 
@@ -75,7 +75,7 @@ export class ProdutoFormComponent implements OnInit {
         this.salvando.set(false);
         this.erro.set(err.error ?? 'Não foi possível salvar o produto.');
         console.error(err);
-      }
+      },
     });
   }
 }

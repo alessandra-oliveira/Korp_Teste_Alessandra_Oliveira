@@ -9,17 +9,16 @@ import { DatePipe } from '@angular/common';
   selector: 'app-notas-fiscais',
   templateUrl: './notas-fiscais.html',
   styleUrl: './notas-fiscais.css',
-  imports: [DatePipe]
+  imports: [DatePipe],
 })
-export class NotasFiscaisComponent implements OnInit {
-
+export class ListaNotasFiscaisComponent implements OnInit {
   notas = signal<NotaFiscal[]>([]);
   carregando = signal(false);
   erro = signal('');
 
   constructor(
     private notaFiscalService: NotaFiscalService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +37,7 @@ export class NotasFiscaisComponent implements OnInit {
       error: () => {
         this.erro.set('Não foi possível carregar as notas fiscais.');
         this.carregando.set(false);
-      }
+      },
     });
   }
 
@@ -49,5 +48,4 @@ export class NotasFiscaisComponent implements OnInit {
   visualizar(id: number): void {
     this.router.navigate(['/notas-fiscais', id]);
   }
-
 }
