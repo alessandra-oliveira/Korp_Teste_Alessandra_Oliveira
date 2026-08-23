@@ -15,7 +15,9 @@ public class ProdutoService
 
     public async Task<List<Produto>> ListarAsync()
     {
-        return await _context.Produtos.ToListAsync();
+        return await _context.Produtos
+            .OrderBy(p => p.Id)
+            .ToListAsync();
     }
 
     public async Task<Produto> ObterPorIdAsync(int id)

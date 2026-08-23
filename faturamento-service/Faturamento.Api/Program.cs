@@ -15,6 +15,16 @@ builder.Services.AddHttpClient("EstoqueApi", client =>
 
 builder.Services.AddScoped<NotaFiscalService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -35,6 +45,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseCors("PermitirAngular");
 app.MapControllers();
 
 app.Run();

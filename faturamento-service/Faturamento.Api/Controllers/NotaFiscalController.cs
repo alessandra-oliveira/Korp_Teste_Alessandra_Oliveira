@@ -48,6 +48,10 @@ public class NotasFiscaisController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+        catch (InvalidOperationException ex)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, ex.Message);
+        }
     }
 
     [HttpPost("{id}/fechar")]
