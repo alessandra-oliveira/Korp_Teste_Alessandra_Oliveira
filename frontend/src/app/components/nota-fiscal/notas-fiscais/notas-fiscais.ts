@@ -1,8 +1,8 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { NotaFiscal } from '../../models/NotaFiscal';
-import { NotaFiscalService } from '../../services/nota-fiscal';
+import { NotaFiscal } from '../../../shared/models/NotaFiscal';
+import { NotaFiscalService } from '../../../shared/services/nota-fiscal';
 import { DatePipe } from '@angular/common';
 
 @Component({

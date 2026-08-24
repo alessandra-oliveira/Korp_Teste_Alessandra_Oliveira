@@ -1,9 +1,9 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { NotaFiscalService, NovoItemNotaFiscal } from '../../services/nota-fiscal';
-import { ProdutoService } from '../../services/produto';
-import { Produto } from '../../models/ProdutoModel';
+import { NotaFiscalService, NovoItemNotaFiscal } from '../../../shared/services/nota-fiscal';
+import { ProdutoService } from '../../../shared/services/produto';
+import { Produto } from '../../../shared/models/ProdutoModel';
 
 interface LinhaItem {
   produtoId: number | null;

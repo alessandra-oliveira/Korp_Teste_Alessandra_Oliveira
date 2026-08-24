@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProdutoService } from '../../services/produto';
+import { ProdutoService } from '../../../shared/services/produto';
 
 @Component({
   selector: 'app-produto-form',

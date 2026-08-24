@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { ProdutoService } from '../../services/produto';
-import { Produto } from '../../models/ProdutoModel';
+import { ProdutoService } from '../../../shared/services/produto';
+import { Produto } from '../../../shared/models/ProdutoModel';
 import { RouterLink } from '@angular/router';
 
 @Component({

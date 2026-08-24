@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NotaFiscal } from './nota-fiscal';
+import { NotaFiscalService } from './nota-fiscal';
 
-describe('NotaFiscal', () => {
-  let service: NotaFiscal;
+describe('NotaFiscalService', () => {
+  let service: NotaFiscalService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(NotaFiscal);
+    service = TestBed.inject(NotaFiscalService);
   });
 
   it('should be created', () => {

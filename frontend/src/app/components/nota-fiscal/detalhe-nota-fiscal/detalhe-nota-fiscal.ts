@@ -4,10 +4,10 @@ import { DatePipe } from '@angular/common';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { NotaFiscal } from '../../models/NotaFiscal';
-import { NotaFiscalService } from '../../services/nota-fiscal';
-import { ProdutoService } from '../../services/produto';
-import { Produto } from '../../models/ProdutoModel';
+import { NotaFiscal } from '../../../shared/models/NotaFiscal';
+import { NotaFiscalService } from '../../../shared/services/nota-fiscal';
+import { ProdutoService } from '../../../shared/services/produto';
+import { Produto } from '../../../shared/models/ProdutoModel';
 
 interface ItemComProduto {
   produtoId: number;
@@ -98,36 +98,46 @@ export class DetalheNotaFiscalComponent implements OnInit {
   }
 
   imprimir(): void {
-    const notaAtual = this.nota();
-    if (!notaAtual || notaAtual.status !== 'Aberta' || this.imprimindo()) {
-      return;
-    }
-
-    this.imprimindo.set(true);
-    this.erro.set('');
-
-    this.notaFiscalService.fechar(notaAtual.id).subscribe({
-      next: () => {
-        this.notaFiscalService.obterPorId(notaAtual.id).subscribe({
-          next: (notaAtualizada) => {
-            this.nota.set(notaAtualizada);
-            this.imprimindo.set(false);
-            setTimeout(() => window.print(), 0);
-          },
-          error: () => {
-            this.imprimindo.set(false);
-            this.erro.set('Nota fechada, mas não foi possível atualizar a tela.');
-          },
-        });
-      },
-      error: (err) => {
-        this.imprimindo.set(false);
-        this.erro.set(
-          err.error?.erro ?? 'Não foi possível imprimir a nota fiscal. Tente novamente.',
-        );
-      },
-    });
+  const notaAtual = this.nota();
+  if (!notaAtual || notaAtual.status !== 'Aberta' || this.imprimindo()) {
+    return;
   }
+
+  this.imprimindo.set(true);
+  this.erro.set('');
+
+  this.notaFiscalService.fechar(notaAtual.id).subscribe({
+    next: () => this.aguardarFechamento(notaAtual.id),
+    error: (err) => {
+      this.imprimindo.set(false);
+      this.erro.set(err.error?.erro ?? 'Não foi possível imprimir a nota fiscal. Tente novamente.');
+    },
+  });
+}
+
+private aguardarFechamento(notaId: number, tentativas = 0): void {
+  const MAX_TENTATIVAS = 120;
+
+  this.notaFiscalService.obterPorId(notaId).subscribe({
+    next: (nota) => {
+      this.nota.set(nota);
+
+      if (nota.status === 'Fechada') {
+        this.imprimindo.set(false);
+        setTimeout(() => window.print(), 0);
+      } else if (tentativas < MAX_TENTATIVAS) {
+        setTimeout(() => this.aguardarFechamento(notaId, tentativas + 1), 1000);
+      } else {
+        this.imprimindo.set(false);
+        this.erro.set('O processamento está demorando mais que o esperado. Verifique o status novamente em instantes.');
+      }
+    },
+    error: () => {
+      this.imprimindo.set(false);
+      this.erro.set('Nota fechada, mas não foi possível confirmar o status.');
+    },
+  });
+}
 
   voltar(): void {
     this.router.navigate(['/notas-fiscais']);
