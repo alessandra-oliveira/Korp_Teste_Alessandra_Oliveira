@@ -16,7 +16,8 @@ public class ProdutoService
     public async Task<List<Produto>> ListarAsync()
     {
         return await _context.Produtos
-            .OrderBy(p => p.Id)
+            .OrderBy(p => p.CreatedAt)
+            .ThenBy(p => p.Id)
             .ToListAsync();
     }
 

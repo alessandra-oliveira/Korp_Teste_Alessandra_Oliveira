@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16
@@ -14,6 +12,73 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U korp_user -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  estoque-api:
+    build:
+      context: ./estoque-service/Estoque.Api
+      dockerfile: Dockerfile
+    container_name: korp_estoque_api
+    restart: always
+    ports:
+      - "5066:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=korp_estoque;Username=${POSTGRES_USER:-korp_user};Password=${POSTGRES_PASSWORD:-korp_senha}"
+      RabbitMq__HostName: "rabbitmq"
+      RabbitMq__UserName: "admin"
+      RabbitMq__Password: "admin"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  faturamento-api:
+    build:
+      context: ./faturamento-service/Faturamento.Api
+      dockerfile: Dockerfile
+    container_name: korp_faturamento_api
+    restart: always
+    ports:
+      - "5274:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=korp_faturamento;Username=${POSTGRES_USER:-korp_user};Password=${POSTGRES_PASSWORD:-korp_senha}"
+      EstoqueApi__BaseUrl: "http://estoque-api:8080/"
+      RabbitMq__HostName: "rabbitmq"
+      RabbitMq__UserName: "admin"
+      RabbitMq__Password: "admin"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      estoque-api:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: korp_rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   postgres_data:
+  rabbitmq_data:

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Estoque.Api.Data;
 using Estoque.Api.Services;
+using Estoque.Api.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHostedService<ConsumidorRabbitMq>();
+builder.Services.AddSingleton<PublicadorRabbitMq>();
 
 var app = builder.Build();
 

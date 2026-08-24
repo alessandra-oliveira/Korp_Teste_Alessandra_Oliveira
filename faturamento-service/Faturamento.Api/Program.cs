@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Faturamento.Api.Data;
 using Faturamento.Api.Services;
+using Faturamento.Api.Messaging;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,10 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<FaturamentoDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHttpClient("EstoqueApi", client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5066/");
-});
+builder.Services.AddSingleton<PublicadorRabbitMq>();
+builder.Services.AddHostedService<ConsumidorRabbitMq>();
 
 builder.Services.AddScoped<NotaFiscalService>();
 
@@ -34,7 +33,6 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
