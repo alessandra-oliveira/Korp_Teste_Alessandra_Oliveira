@@ -122,7 +122,7 @@ export class DetalheNotaFiscalComponent implements OnInit {
           },
           error: () => {
             this.imprimindo.set(false);
-            this.erro.set('A nota foi fechada, mas não foi possível confirmar o status.');
+            this.erro.set('Solicitação enviada. Atualize a página para verificar o status.');
           },
         });
       },
