@@ -13,6 +13,7 @@ public class NotaFiscal
 public enum StatusNotaFiscal
 {
     Aberta,
-    Processando,
-    Fechada
+    Processada,
+    Fechada,
+    Processando
 }

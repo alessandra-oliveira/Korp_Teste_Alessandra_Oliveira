@@ -94,6 +94,10 @@ public class ProdutosController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
         catch (InvalidOperationException ex)
         {
             return Conflict(ex.Message);

@@ -43,7 +43,7 @@ public class ConsumidorRabbitMq : BackgroundService
                 var nota = await context.NotasFiscais.FindAsync(notaId);
                 if (nota is not null)
                 {
-                    nota.Status = StatusNotaFiscal.Fechada;
+                    nota.Status = StatusNotaFiscal.Processada;
                     await context.SaveChangesAsync();
                 }
             }

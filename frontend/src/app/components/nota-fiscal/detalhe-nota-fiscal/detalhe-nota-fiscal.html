@@ -2,281 +2,278 @@
 
   @if (carregando()) {
 
-    <div class="nota-estado">
-      Carregando nota fiscal...
-    </div>
+  <div class="nota-estado">
+    Carregando nota fiscal...
+  </div>
 
   }
 
   @if (erro()) {
 
-    <div class="nota-erro">
-      {{ erro() }}
-    </div>
+  <div class="nota-erro">
+    {{ erro() }}
+  </div>
 
   }
 
   @if (!carregando() && nota()) {
 
-    <div class="nota-acoes">
+  <div class="nota-acoes">
 
-      <button
-        type="button"
-        class="nota-btn nota-btn-secundario"
-        (click)="voltar()">
-        Voltar
-      </button>
+    <button type="button" class="nota-btn nota-btn-secundario" (click)="voltar()">
+      Voltar
+    </button>
 
-      <button
-        type="button"
-        class="nota-btn nota-btn-imprimir"
-        [disabled]="!podeImprimir() || imprimindo()"
-        (click)="imprimir()">
+    <button type="button" class="nota-btn nota-btn-processar" [disabled]="!podeProcessar() || imprimindo()"
+      (click)="processar()">
 
-        @if (imprimindo()) {
-          Processando...
-        } @else {
-          Imprimir
-        }
+      @if (nota()?.status === 'Processando' || imprimindo()) {
+      Processando...
+      } @else {
+      Processar
+      }
 
-      </button>
+    </button>
 
-    </div>
+    <button type="button" class="nota-btn nota-btn-imprimir" [disabled]="!podeImprimir() || imprimindo()"
+      (click)="imprimir()">
 
-    <div class="nota-documento">
+      Imprimir
 
-      <header class="nota-cabecalho">
+    </button>
 
-        <div class="nota-empresa">
+  </div>
 
-          <h1>MINHA EMPRESA</h1>
+  <div class="nota-documento">
 
-          <p>CNPJ: 00.000.000/0001-00</p>
-          <p>Rua Exemplo, 100 - Serra Talhada - PE</p>
-          <p>CEP: 56900-000</p>
+    <header class="nota-cabecalho">
 
-        </div>
+      <div class="nota-empresa">
 
+        <h1>MINHA EMPRESA</h1>
 
-        <div class="nota-identificacao">
+        <p>CNPJ: 00.000.000/0001-00</p>
+        <p>Rua Exemplo, 100 - Serra Talhada - PE</p>
+        <p>CEP: 56900-000</p>
 
-          <h2>NOTA FISCAL</h2>
+      </div>
 
-          <strong class="nota-numero">
-            Nº {{ nota()!.numero }}
-          </strong>
 
-          <span>
-            Emissão:
-            {{ nota()!.dataCriacao | date:'dd/MM/yyyy HH:mm' }}
-          </span>
+      <div class="nota-identificacao">
 
-          <span
-            class="nota-status"
-            [class.nota-status-aberta]="nota()!.status === 'Aberta'"
-            [class.nota-status-fechada]="nota()!.status === 'Fechada'">
+        <h2>NOTA FISCAL</h2>
 
-            {{ nota()!.status }}
-
-          </span>
-
-        </div>
-
-      </header>
-
-      <section class="nota-bloco">
-
-        <div class="nota-titulo-bloco">
-          Emitente
-        </div>
-
-        <div class="nota-dados">
-
-          <div class="nota-dado">
-
-            <span>Razão Social</span>
-
-            <strong>
-              Minha Empresa
-            </strong>
-
-          </div>
-
-          <div class="nota-dado">
-
-            <span>CNPJ</span>
-
-            <strong>
-              00.000.000/0001-00
-            </strong>
-
-          </div>
-
-          <div class="nota-dado">
-
-            <span>Endereço</span>
-
-            <strong>
-              Rua Exemplo, 100
-            </strong>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      <section class="nota-bloco">
-
-        <div class="nota-titulo-bloco">
-          Destinatário
-        </div>
-
-        <div class="nota-dados">
-
-          <div class="nota-dado">
-
-            <span>Nome</span>
-
-            <strong>
-              Consumidor
-            </strong>
-
-          </div>
-
-          <div class="nota-dado">
-
-            <span>CPF/CNPJ</span>
-
-            <strong>
-              Não informado
-            </strong>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      <section class="nota-produtos">
-
-        <div class="nota-titulo-bloco">
-          Produtos e Serviços
-        </div>
-
-        <table class="nota-tabela">
-
-          <thead>
-
-            <tr>
-              <th>Código</th>
-              <th>Descrição</th>
-              <th>Quantidade</th>
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            @for (
-              item of itensComProduto();
-              track $index
-            ) {
-
-              <tr>
-
-                <td>
-                  {{ item.codigoProduto }}
-                </td>
-
-                <td>
-                  {{ item.descricaoProduto }}
-                </td>
-
-                <td class="nota-quantidade">
-                  {{ item.quantidade }}
-                </td>
-
-              </tr>
-
-            }
-
-            @if (itensComProduto().length === 0) {
-
-              <tr>
-
-                <td
-                  colspan="3"
-                  class="nota-sem-itens">
-
-                  Nenhum produto encontrado.
-
-                </td>
-
-              </tr>
-
-            }
-
-          </tbody>
-
-        </table>
-
-      </section>
-
-      <section class="nota-totais">
-
-        <div class="nota-total-item">
-
-          <span>
-            Quantidade de itens
-          </span>
-
-          <strong>
-            {{ itensComProduto().length }}
-          </strong>
-
-        </div>
-
-
-        <div class="nota-total-item nota-total-final">
-
-          <span>
-            Total da Nota
-          </span>
-
-          <strong>
-            R$ 0,00
-          </strong>
-
-        </div>
-
-      </section>
-
-      <section class="nota-observacoes">
-
-        <div class="nota-titulo-bloco">
-          Observações
-        </div>
-
-        <p>
-          Documento gerado pelo sistema para fins de controle.
-        </p>
-
-      </section>
-
-      <footer class="nota-rodape">
-
-        <strong>
-          DOCUMENTO SEM VALOR FISCAL
+        <strong class="nota-numero">
+          Nº {{ nota()!.numero }}
         </strong>
 
         <span>
-          Nota Fiscal Nº {{ nota()!.numero }}
+          Emissão:
+          {{ nota()!.dataCriacao | date:'dd/MM/yyyy HH:mm' }}
         </span>
 
-      </footer>
+        <span class="nota-status" [class.nota-status-aberta]="nota()!.status === 'Aberta'"
+          [class.nota-status-fechada]="nota()!.status === 'Fechada'">
 
-    </div>
+          {{ nota()!.status }}
+
+        </span>
+
+      </div>
+
+    </header>
+
+    <section class="nota-bloco">
+
+      <div class="nota-titulo-bloco">
+        Emitente
+      </div>
+
+      <div class="nota-dados">
+
+        <div class="nota-dado">
+
+          <span>Razão Social</span>
+
+          <strong>
+            Minha Empresa
+          </strong>
+
+        </div>
+
+        <div class="nota-dado">
+
+          <span>CNPJ</span>
+
+          <strong>
+            00.000.000/0001-00
+          </strong>
+
+        </div>
+
+        <div class="nota-dado">
+
+          <span>Endereço</span>
+
+          <strong>
+            Rua Exemplo, 100
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="nota-bloco">
+
+      <div class="nota-titulo-bloco">
+        Destinatário
+      </div>
+
+      <div class="nota-dados">
+
+        <div class="nota-dado">
+
+          <span>Nome</span>
+
+          <strong>
+            Consumidor
+          </strong>
+
+        </div>
+
+        <div class="nota-dado">
+
+          <span>CPF/CNPJ</span>
+
+          <strong>
+            Não informado
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="nota-produtos">
+
+      <div class="nota-titulo-bloco">
+        Produtos e Serviços
+      </div>
+
+      <table class="nota-tabela">
+
+        <thead>
+
+          <tr>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Quantidade</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (
+          item of itensComProduto();
+          track $index
+          ) {
+
+          <tr>
+
+            <td>
+              {{ item.codigoProduto }}
+            </td>
+
+            <td>
+              {{ item.descricaoProduto }}
+            </td>
+
+            <td class="nota-quantidade">
+              {{ item.quantidade }}
+            </td>
+
+          </tr>
+
+          }
+
+          @if (itensComProduto().length === 0) {
+
+          <tr>
+
+            <td colspan="3" class="nota-sem-itens">
+
+              Nenhum produto encontrado.
+
+            </td>
+
+          </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </section>
+
+    <section class="nota-totais">
+
+      <div class="nota-total-item">
+
+        <span>
+          Quantidade de itens
+        </span>
+
+        <strong>
+          {{ itensComProduto().length }}
+        </strong>
+
+      </div>
+
+
+      <div class="nota-total-item nota-total-final">
+
+        <span>
+          Total da Nota
+        </span>
+
+        <strong>
+          R$ 0,00
+        </strong>
+
+      </div>
+
+    </section>
+
+    <section class="nota-observacoes">
+
+      <div class="nota-titulo-bloco">
+        Observações
+      </div>
+
+      <p>
+        Documento gerado pelo sistema para fins de controle.
+      </p>
+
+    </section>
+
+    <footer class="nota-rodape">
+
+      <strong>
+        DOCUMENTO SEM VALOR FISCAL
+      </strong>
+
+      <span>
+        Nota Fiscal Nº {{ nota()!.numero }}
+      </span>
+
+    </footer>
+
+  </div>
 
   }
 

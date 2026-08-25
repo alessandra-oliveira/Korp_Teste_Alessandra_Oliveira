@@ -59,7 +59,7 @@ public class NotaFiscalService
         return nota;
     }
 
-    public async Task FecharAsync(int notaId)
+    public async Task ProcessarAsync(int notaId)
     {
         var nota = await _context.NotasFiscais
             .Include(n => n.Itens)
@@ -69,7 +69,7 @@ public class NotaFiscalService
             throw new KeyNotFoundException($"Nota fiscal com Id {notaId} não encontrada.");
 
         if (nota.Status != StatusNotaFiscal.Aberta)
-            throw new InvalidOperationException("Apenas notas com status Aberta podem ser fechadas.");
+            throw new InvalidOperationException("Apenas notas com status Aberta podem ser processadas.");
 
         nota.Status = StatusNotaFiscal.Processando;
         await _context.SaveChangesAsync();
@@ -85,5 +85,23 @@ public class NotaFiscalService
         };
 
         await _publisher.PublicarAsync(mensagem);
+    }
+
+    public async Task FecharAsync(int notaId)
+    {
+        var nota = await _context.NotasFiscais
+            .FirstOrDefaultAsync(n => n.Id == notaId);
+
+        if (nota is null)
+            throw new KeyNotFoundException(
+                $"Nota fiscal com Id {notaId} não encontrada.");
+
+        if (nota.Status != StatusNotaFiscal.Processada)
+            throw new InvalidOperationException(
+                "Apenas notas com status Processada podem ser fechadas.");
+
+        nota.Status = StatusNotaFiscal.Fechada;
+
+        await _context.SaveChangesAsync();
     }
 }

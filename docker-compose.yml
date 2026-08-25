@@ -49,15 +49,12 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=korp_faturamento;Username=${POSTGRES_USER:-korp_user};Password=${POSTGRES_PASSWORD:-korp_senha}"
-      EstoqueApi__BaseUrl: "http://estoque-api:8080/"
       RabbitMq__HostName: "rabbitmq"
       RabbitMq__UserName: "admin"
       RabbitMq__Password: "admin"
     depends_on:
       postgres:
         condition: service_healthy
-      estoque-api:
-        condition: service_started
       rabbitmq:
         condition: service_healthy
 

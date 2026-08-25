@@ -33,4 +33,11 @@ export class NotaFiscalService {
   fechar(id: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/${id}/fechar`, {});
   }
+
+  processar(id: number) {
+    return this.http.post(
+      `${this.apiUrl}/${id}/processar`,
+      {}
+    );
+  }
 }

@@ -48,7 +48,6 @@ public class NotasFiscaisController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-
     }
 
     [HttpPost("{id}/fechar")]
@@ -57,7 +56,7 @@ public class NotasFiscaisController : ControllerBase
         try
         {
             await _notaFiscalService.FecharAsync(id);
-            return Accepted(new { mensagem = "Solicitação de fechamento recebida. O processamento está em andamento." });
+            return NoContent();
         }
         catch (KeyNotFoundException ex)
         {
@@ -68,4 +67,27 @@ public class NotasFiscaisController : ControllerBase
             return Conflict(ex.Message);
         }
     }
+
+    [HttpPost("{id}/processar")]
+    public async Task<IActionResult> Processar(int id)
+    {
+        try
+        {
+            await _notaFiscalService.ProcessarAsync(id);
+
+            return Accepted(new
+            {
+                mensagem = "Nota fiscal enviada para processamento."
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ex.Message);
+        }
+    }
+
 }

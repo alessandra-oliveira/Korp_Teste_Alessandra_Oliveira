@@ -97,6 +97,9 @@ public class ProdutoService
 
     public async Task AtualizarSaldoAsync(int produtoId, int quantidadeUtilizada)
     {
+        if (quantidadeUtilizada <= 0)
+            throw new ArgumentException("A quantidade utilizada deve ser maior que zero.");
+
         var produto = await _context.Produtos.FindAsync(produtoId);
 
         if (produto is null)

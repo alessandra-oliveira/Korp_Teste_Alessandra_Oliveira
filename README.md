@@ -7,7 +7,7 @@ Sistema de emissão de notas fiscais com cadastro de produtos, controle de estoq
 A solução é composta por:
 
 - **Estoque API**: cadastro, consulta, edição e exclusão de produtos, além do controle de saldo.
-- **Faturamento API**: criação, consulta e fechamento de notas fiscais.
+- **Faturamento API**: criação, consulta, processamento e fechamento de notas fiscais.
 - **Frontend Angular**: interface para gerenciamento de produtos e notas fiscais.
 - **PostgreSQL**: persistência dos dados de estoque e faturamento em bancos separados.
 - **RabbitMQ**: integração assíncrona para atualizar o estoque e confirmar o processamento da nota.
@@ -62,16 +62,18 @@ flowchart TB
     FConsumer --> F
 ```
 
-### Fluxo de fechamento
+### Fluxo de processamento e fechamento
 
 1. Uma nota é criada com status `Aberta`.
-2. O usuário solicita a impressão da nota.
+2. O usuário solicita o processamento da nota.
 3. O Faturamento API muda o status para `Processando`.
 4. Uma mensagem é publicada na fila `atualizar-saldo`.
 5. O Estoque API consome a mensagem e deduz as quantidades dos produtos.
 6. O Estoque API publica uma confirmação na fila `nota-processada`.
-7. O Faturamento API consome a confirmação e altera a nota para `Fechada`.
-8. O frontend atualiza os dados e abre a impressão do navegador.
+7. O Faturamento API consome a confirmação e altera a nota para `Processada`.
+8. O usuário solicita o fechamento e a impressão.
+9. O Faturamento API altera a nota para `Fechada`.
+10. O frontend atualiza os dados e abre a impressão do navegador.
 
 Os consumidores RabbitMQ são executados como `BackgroundService`, com confirmação manual das mensagens (`autoAck: false`).
 
@@ -134,9 +136,9 @@ Acesse `http://localhost:4200`.
 | `/produtos/:id/editar` | Edita produtos |
 | `/notas-fiscais` | Lista notas fiscais |
 | `/notas-fiscais/nova` | Cria notas com múltiplos itens |
-| `/notas-fiscais/:id` | Visualiza e imprime uma nota |
+| `/notas-fiscais/:id` | Visualiza, processa, fecha e imprime uma nota |
 
-O frontend utiliza `ReactiveFormsModule` para o cadastro de produtos, `HttpClient` para as APIs, `OnInit` para carregamento inicial, signals para estado local e RxJS para operações assíncronas.
+O formulário de produtos utiliza `ReactiveFormsModule`. A criação de notas usa bindings nativos e signals. O frontend utiliza `HttpClient` para as APIs, `OnInit` para carregamento inicial, signals para estado local e RxJS para operações assíncronas.
 
 ## API de Estoque
 
@@ -161,6 +163,12 @@ Exemplo de cadastro:
 }
 ```
 
+Para atualizar o saldo, o corpo da requisição deve ser um inteiro JSON puro:
+
+```json
+2
+```
+
 A API valida código e descrição obrigatórios, saldo não negativo e unicidade do código. Saldo insuficiente retorna `409 Conflict`.
 
 ## API de Faturamento
@@ -172,7 +180,8 @@ Base URL: `http://localhost:5274/api/NotasFiscais`
 | `GET` | `/api/NotasFiscais` | Lista notas com seus itens |
 | `GET` | `/api/NotasFiscais/{id}` | Consulta uma nota |
 | `POST` | `/api/NotasFiscais` | Cria uma nota aberta |
-| `POST` | `/api/NotasFiscais/{id}/fechar` | Inicia o fechamento da nota |
+| `POST` | `/api/NotasFiscais/{id}/processar` | Envia a nota para processamento e atualização do estoque |
+| `POST` | `/api/NotasFiscais/{id}/fechar` | Fecha uma nota processada |
 
 Exemplo de criação:
 
@@ -185,7 +194,9 @@ Exemplo de criação:
 ]
 ```
 
-A numeração é gerada sequencialmente. Os status possíveis são `Aberta`, `Processando` e `Fechada`.
+A numeração é gerada sequencialmente. Os status possíveis são `Aberta`, `Processando`, `Processada` e `Fechada`.
+
+O processamento e o fechamento são operações separadas. Uma nota só pode ser fechada depois que o Estoque API confirmar a atualização dos saldos.
 
 ## Persistência
 
@@ -244,4 +255,4 @@ RabbitMq__Password: admin
 As filas utilizadas são:
 
 - `atualizar-saldo`: Faturamento publica; Estoque consome.
-- `nota-processada`: Estoque publica; Faturamento consome.
+- `nota-processada`: Estoque publica; Faturamento consome e altera a nota para `Processada`.
