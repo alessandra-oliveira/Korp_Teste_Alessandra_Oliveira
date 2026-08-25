@@ -162,6 +162,7 @@ export class DetalheNotaFiscalComponent implements OnInit {
 
   private aguardarProcessamento(notaId: number, tentativas = 0): void {
     const MAX_TENTATIVAS = 120;
+    const AVISO_DEMORA = 8;
 
     this.notaFiscalService.obterPorId(notaId).subscribe({
       next: (nota) => {
@@ -169,6 +170,13 @@ export class DetalheNotaFiscalComponent implements OnInit {
 
         if (nota.status === 'Processada') {
           this.processando.set(false);
+          this.erro.set('');
+        } else if (tentativas === AVISO_DEMORA) {
+          this.erro.set(
+            'O processamento está demorando mais que o normal. O serviço de Estoque pode estar ' +
+              'temporariamente indisponível. O sistema continuará tentando automaticamente.',
+          );
+          setTimeout(() => this.aguardarProcessamento(notaId, tentativas + 1), 1000);
         } else if (tentativas < MAX_TENTATIVAS) {
           setTimeout(() => this.aguardarProcessamento(notaId, tentativas + 1), 1000);
         } else {
